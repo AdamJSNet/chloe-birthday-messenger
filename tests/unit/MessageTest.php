@@ -4,7 +4,7 @@ use App\Entities\Message;
 use App\Enum\MessageType;
 use App\Exceptions\MessageException;
 
-class MessageTest extends \PHPUnit\Framework\TestCase
+class MessageTest extends PHPUnit\Framework\TestCase
 {
     public function test_it_rejects_empty_properties_array()
     {
