@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Enum\MessageType;
+use App\Exceptions\MessageException;
 
 class Message
 {
@@ -107,11 +108,11 @@ class Message
         $diff2 = array_diff($keys, $props);
 
         if (!empty($diff1)) {
-            throw new \InvalidArgumentException("Invalid properties: " . implode(", ", $diff1));
+            throw MessageException::invalidProperties($diff1);
         }
 
         if (!empty($diff2)) {
-            throw new \InvalidArgumentException("Invalid properties: " . implode(", ", $diff2));
+            throw MessageException::invalidProperties($diff2);
         }
 
         extract($data);
@@ -119,7 +120,7 @@ class Message
         // convert timestamp to object
         $dateTime = \DateTimeImmutable::createFromFormat($timestamp, "Y-m-dTH:i:sP");
         if (!($dateTime instanceof \DateTimeImmutable)) {
-            throw new \InvalidArgumentException("Invalid date format");
+            throw MessageException::invalidDateFormat();
         }
 
         // cast to boolean
@@ -138,7 +139,7 @@ class Message
         $messageTypes = MessageType::getAll();
 
         if (!in_array($type, array_values($messageTypes))) {
-            throw new \InvalidArgumentException("Invalid value of 'type'. Expected " . implode(' / ', $messageTypes));
+            throw MessageException::invalidType($messageTypes);
         }
 
         return true;
