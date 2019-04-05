@@ -96,6 +96,11 @@ class Message
         return $this;
     }
 
+    /**
+     * @param array $data
+     * @return Message
+     * @throws MessageException
+     */
     public static function fromArray(array $data)
     {
         $props = ["id", "type", "timestamp", "recipient", "message", "sent"];
@@ -132,7 +137,7 @@ class Message
     /**
      * @param string $type
      * @return bool
-     * @throws \InvalidArgumentException
+     * @throws MessageException
      */
     protected function validate(string $type)
     {
