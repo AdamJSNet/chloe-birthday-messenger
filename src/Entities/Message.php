@@ -123,7 +123,7 @@ class Message
         extract($data);
 
         // convert timestamp to object
-        $dateTime = \DateTimeImmutable::createFromFormat($timestamp, "Y-m-dTH:i:sP");
+        $dateTime = \DateTimeImmutable::createFromFormat($timestamp, "Y-m-d\TH:i:sP");
         if (!($dateTime instanceof \DateTimeImmutable)) {
             throw MessageException::invalidDateFormat();
         }
