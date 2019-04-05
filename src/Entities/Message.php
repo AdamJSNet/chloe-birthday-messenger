@@ -12,6 +12,8 @@ class Message
     protected $type;
     /** @var \DateTimeInterface  $timestamp */
     protected $timestamp;
+    /** @var string $recipient */
+    protected $recipient;
     /** @var string $message */
     protected $message;
     /** @var bool $sent */
@@ -21,6 +23,7 @@ class Message
         $id,
         string $type,
         \DateTimeInterface $timestamp,
+        string $recipient,
         string $message,
         bool $sent = false
     ) {
@@ -33,6 +36,7 @@ class Message
         $this->id = $id;
         $this->type = $type;
         $this->timestamp = $timestamp;
+        $this->recipient = $recipient;
         $this->message = $message;
         $this->sent = $sent;
     }
@@ -59,6 +63,14 @@ class Message
     public function getTimestamp(): \DateTimeInterface
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecipient()
+    {
+        return $this->recipient;
     }
 
     /**
