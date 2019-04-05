@@ -95,6 +95,39 @@ class Message
         return $this;
     }
 
+    public static function fromArray(array $data)
+    {
+        $props = ["id", "type", "timestamp", "recipient", "message", "sent"];
+        $keys = array_keys($data);
+
+        sort($props);
+        sort($data);
+
+        $diff1 = array_diff($props, $keys);
+        $diff2 = array_diff($keys, $props);
+
+        if (!empty($diff1)) {
+            throw new \InvalidArgumentException("Invalid properties: " . implode(", ", $diff1));
+        }
+
+        if (!empty($diff2)) {
+            throw new \InvalidArgumentException("Invalid properties: " . implode(", ", $diff2));
+        }
+
+        extract($data);
+
+        // convert timestamp to object
+        $dateTime = \DateTimeImmutable::createFromFormat($timestamp, "Y-m-dTH:i:sP");
+        if (!($dateTime instanceof \DateTimeImmutable)) {
+            throw new \InvalidArgumentException("Invalid date format");
+        }
+
+        // cast to boolean
+        $boolSent = (bool) $sent;
+
+        return new self($id, $type, $dateTime, $recipient, $message, $boolSent);
+    }
+
     /**
      * @param string $type
      * @return bool
