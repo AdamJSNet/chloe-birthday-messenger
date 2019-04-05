@@ -68,7 +68,7 @@ class Message
     /**
      * @return string
      */
-    public function getRecipient()
+    public function getRecipient(): string
     {
         return $this->recipient;
     }
