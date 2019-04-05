@@ -27,17 +27,13 @@ class Message
         string $message,
         bool $sent = false
     ) {
-        $messageTypes = MessageType::getAll();
-
-        if (!in_array($type, array_values($messageTypes))) {
-            throw new \InvalidArgumentException("Invalid value of 'type'. Expected " . implode(' / ', $messageTypes));
-        }
+        $this->validate($type);
 
         $this->id = $id;
-        $this->type = $type;
+        $this->type = trim($type);
         $this->timestamp = $timestamp;
-        $this->recipient = $recipient;
-        $this->message = $message;
+        $this->recipient = trim($recipient);
+        $this->message = trim($message);
         $this->sent = $sent;
     }
 
@@ -98,4 +94,21 @@ class Message
         $this->sent = $sent;
         return $this;
     }
+
+    /**
+     * @param string $type
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    protected function validate(string $type)
+    {
+        $messageTypes = MessageType::getAll();
+
+        if (!in_array($type, array_values($messageTypes))) {
+            throw new \InvalidArgumentException("Invalid value of 'type'. Expected " . implode(' / ', $messageTypes));
+        }
+
+        return true;
+    }
+
 }
