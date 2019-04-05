@@ -107,7 +107,7 @@ class Message
         $keys = array_keys($data);
 
         sort($props);
-        sort($data);
+        sort($keys);
 
         $diff1 = array_diff($props, $keys);
         $diff2 = array_diff($keys, $props);
@@ -123,7 +123,7 @@ class Message
         extract($data);
 
         // convert timestamp to object
-        $dateTime = \DateTimeImmutable::createFromFormat($timestamp, "Y-m-d\TH:i:sP");
+        $dateTime = \DateTimeImmutable::createFromFormat("Y-m-d\TH:i:sP", $timestamp);
         if (!($dateTime instanceof \DateTimeImmutable)) {
             throw MessageException::invalidDateFormat();
         }
