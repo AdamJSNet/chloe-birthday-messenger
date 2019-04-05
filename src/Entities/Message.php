@@ -98,6 +98,15 @@ class Message implements MessageInterface
     }
 
     /**
+     * @param \DateTimeInterface $date
+     * @return bool
+     */
+    public function isElapsed(\DateTimeInterface $date): bool
+    {
+        return ($date > $this->getTimestamp());
+    }
+
+    /**
      * @param array $data
      * @return Message
      * @throws MessageException

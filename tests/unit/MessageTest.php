@@ -100,6 +100,28 @@ class MessageTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($message->isSent());
     }
 
+    public function test_it_identifies_an_elapsed_timestamp()
+    {
+        $data = $this->getValidTestData();
+        $message = Message::fromArray($data);
+
+        // 2 days in the future
+        $now = $message->getTimestamp()->add(new \DateInterval("P2D"));
+
+        $this->assertTrue($message->isElapsed($now));
+    }
+
+    public function test_it_identifies_a_non_elapsed_timestamp()
+    {
+        $data = $this->getValidTestData();
+        $message = Message::fromArray($data);
+
+        // 2 days in the past
+        $now = $message->getTimestamp()->sub(new \DateInterval("P2D"));
+
+        $this->assertFalse($message->isElapsed($now));
+    }
+
     protected function getValidTestData()
     {
         return [
