@@ -2,10 +2,11 @@
 
 namespace App\Entities;
 
+use App\Contracts\MessageInterface;
 use App\Enum\MessageType;
 use App\Exceptions\MessageException;
 
-class Message
+class Message implements MessageInterface
 {
     /** @var string $id */
     protected $id;
@@ -90,7 +91,7 @@ class Message
      * @param bool $sent
      * @return $this
      */
-    public function setSent(bool $sent): self
+    public function setSent(bool $sent): MessageInterface
     {
         $this->sent = $sent;
         return $this;
