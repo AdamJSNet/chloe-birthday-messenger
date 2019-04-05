@@ -6,7 +6,7 @@ use App\Enum\MessageType;
 
 class Message
 {
-    /** @var $id */
+    /** @var string $id */
     protected $id;
     /** @var string $type */
     protected $type;
@@ -20,7 +20,7 @@ class Message
     protected $sent;
 
     public function __construct(
-        $id,
+        string $id,
         string $type,
         \DateTimeInterface $timestamp,
         string $recipient,
@@ -29,7 +29,7 @@ class Message
     ) {
         $this->validate($type);
 
-        $this->id = $id;
+        $this->id = trim($id);
         $this->type = trim($type);
         $this->timestamp = $timestamp;
         $this->recipient = trim($recipient);
@@ -38,9 +38,9 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -110,5 +110,4 @@ class Message
 
         return true;
     }
-
 }
