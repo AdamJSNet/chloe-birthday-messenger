@@ -14,12 +14,12 @@ class MessageCollection implements \Iterator, \Countable
 
     public function current(): MessageInterface
     {
-        return $this->data[$this->pointer];
+        return $this->data[$this->key()];
     }
 
-    public function key(): int
+    public function key()
     {
-        return $this->pointer;
+        return array_keys($this->data)[$this->pointer];
     }
 
     public function next()
@@ -34,7 +34,7 @@ class MessageCollection implements \Iterator, \Countable
 
     public function valid(): bool
     {
-        return isset($this->data[$this->pointer]);
+        return $this->pointer < count($this->data);
     }
 
     public function count(): int
@@ -44,7 +44,7 @@ class MessageCollection implements \Iterator, \Countable
 
     public function add(MessageInterface $message)
     {
-        $this->data[] = $message;
+        $this->data[$message->getId()] = $message;
     }
 
     /**

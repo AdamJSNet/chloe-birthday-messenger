@@ -12,22 +12,26 @@ class MessageCollectionTest extends PHPUnit\Framework\TestCase
     {
         $collection = $this->getCollection();
 
-        $this->assertEquals(4, $collection->count());
+        $this->assertCount(4, $collection);
 
         $collection->rewind();
         for ($i = 1; $i <= $collection->count(); $i++) {
-            $this->assertEquals("my_id_$i", $collection->current()->getId());
+            $id = "my_id_$i";
+            $this->assertEquals($id, $collection->current()->getId());
+            $this->assertEquals($id, $collection->key());
             $collection->next();
         }
     }
 
     public function test_it_creates_collection_of_valid_raw_messages()
     {
-        $messages = [
-            $this->getValidTestData(),
-            $this->getValidTestData(),
-            $this->getValidTestData(),
-        ];
+        $messages = [];
+        for ($i = 0; $i < 3; $i++) {
+            $testData = array_merge($this->getValidTestData(), [
+                "id" => "my_id_$i"
+            ]);
+            $messages[] = $testData;
+        }
 
         $collection = MessageCollection::fromArray($messages);
 
