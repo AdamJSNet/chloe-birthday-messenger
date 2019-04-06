@@ -2,7 +2,6 @@
 
 use App\Clients\LocalDataStoreClient;
 use App\Exceptions\DataStoreClientException;
-use App\Wrappers\SplFileObjectWrapper;
 
 class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
 {
@@ -60,5 +59,10 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
         // Internal class enforces parent constructor call before any other method call,
         // so pass in constructor argument to force Mockery to call this first.
         return Mockery::mock(\SplFileObject::class, ['php://memory']);
+    }
+
+    protected function tearDown()
+    {
+        Mockery::close();
     }
 }

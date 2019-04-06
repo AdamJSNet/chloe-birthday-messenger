@@ -12,11 +12,18 @@ class LocalDataStoreClient implements DataStoreClientInterface
     /** @var array $data */
     protected $data = [];
 
+    /**
+     * LocalDataStoreClient constructor.
+     * @param \SplFileObject $file
+     */
     public function __construct(\SplFileObject $file)
     {
         $this->file = $file;
     }
 
+    /**
+     * @throws DataStoreClientException
+     */
     public function load()
     {
         if ($this->file->flock(LOCK_SH) === false) {
@@ -31,16 +38,26 @@ class LocalDataStoreClient implements DataStoreClientInterface
         $this->data = $json;
     }
 
+    /**
+     * @return array
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
+    /**
+     * @param array $data
+     */
     public function setData(array $data)
     {
         $this->data = $data;
     }
 
+    /**
+     * @return bool
+     * @throws DataStoreClientException
+     */
     public function save()
     {
         $contents = json_encode($this->data);
@@ -51,11 +68,17 @@ class LocalDataStoreClient implements DataStoreClientInterface
         return true;
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
         return count($this->data);
     }
 
+    /**
+     * @return string
+     */
     protected function getFileContents()
     {
         $this->file->rewind();
