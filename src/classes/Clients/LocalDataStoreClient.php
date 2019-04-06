@@ -24,18 +24,20 @@ class LocalDataStoreClient implements DataStoreClientInterface
     /**
      * @throws DataStoreClientException
      */
-    public function load()
+    public function load(): self
     {
         if ($this->file->flock(LOCK_SH) === false) {
             throw DataStoreClientException::noLock();
         }
 
-        $json = json_decode($this->getFileContents());
+        $json = json_decode($this->getFileContents(), true);
         if ($json === null) {
             throw DataStoreClientException::invalidFormat();
         }
 
         $this->data = $json;
+
+        return $this;
     }
 
     /**
