@@ -11,5 +11,5 @@ interface MessageInterface
     public function getMessage(): string;
     public function isSent(): bool;
     public function setSent(bool $sent): MessageInterface;
-    public function isElapsed(\DateTimeInterface $date): bool;
+    public function isElapsed(\DateTimeInterface $date = null): bool;
 }

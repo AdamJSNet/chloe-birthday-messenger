@@ -101,8 +101,11 @@ class Message implements MessageInterface
      * @param \DateTimeInterface $date
      * @return bool
      */
-    public function isElapsed(\DateTimeInterface $date): bool
+    public function isElapsed(\DateTimeInterface $date = null): bool
     {
+        if ($date === null) {
+            $date = new \DateTimeImmutable();
+        }
         return ($date > $this->getTimestamp());
     }
 
