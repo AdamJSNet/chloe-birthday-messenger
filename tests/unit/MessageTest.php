@@ -3,9 +3,12 @@
 use App\Entities\Message;
 use App\Enum\MessageType;
 use App\Exceptions\MessageException;
+use App\Traits\Test\MessageDataTestTrait;
 
 class MessageTest extends PHPUnit\Framework\TestCase
 {
+    use MessageDataTestTrait;
+
     public function test_it_rejects_empty_properties_array()
     {
         $invalid = ["id", "type", "timestamp", "recipient", "message", "sent"];
@@ -120,17 +123,5 @@ class MessageTest extends PHPUnit\Framework\TestCase
         $now = $message->getTimestamp()->sub(new \DateInterval("P2D"));
 
         $this->assertFalse($message->isElapsed($now));
-    }
-
-    protected function getValidTestData()
-    {
-        return [
-            "id" => "my_id",
-            "type" => MessageType::TYPE_SMS,
-            "timestamp" => (new \DateTimeImmutable())->format("Y-m-d\TH:i:sP"),
-            "recipient" => "+447012345678",
-            "message" => "Hello World",
-            "sent" => true
-        ];
     }
 }

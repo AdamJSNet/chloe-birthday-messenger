@@ -1,9 +1,13 @@
 <?php
 
+use App\Collections\MessageCollection;
 use App\Contracts\MessageInterface;
+use App\Traits\Test\MessageDataTestTrait;
 
 class MessageCollectionTest extends PHPUnit\Framework\TestCase
 {
+    use MessageDataTestTrait;
+
     public function test_it_accepts_messages()
     {
         $collection = $this->getCollection();
@@ -15,6 +19,34 @@ class MessageCollectionTest extends PHPUnit\Framework\TestCase
             $this->assertEquals("my_id_$i", $collection->current()->getId());
             $collection->next();
         }
+    }
+
+    public function test_it_creates_collection_of_valid_raw_messages()
+    {
+        $messages = [
+            $this->getValidTestData(),
+            $this->getValidTestData(),
+            $this->getValidTestData(),
+        ];
+
+        $collection = MessageCollection::fromArray($messages);
+
+        $this->assertInstanceOf(MessageCollection::class, $collection);
+        $this->assertCount(3, $collection);
+    }
+
+    public function test_it_throws_exception_for_invalid_messages()
+    {
+        $messages = [
+            [
+                "id" => $this->getValidTestData()["id"]
+                // all other message properties are missing
+            ]
+        ];
+
+        $this->expectException(App\Exceptions\MessageCollectionException::class);
+
+        $collection = MessageCollection::fromArray($messages);
     }
 
     public function test_it_filters_by_elapsed()
@@ -104,7 +136,7 @@ class MessageCollectionTest extends PHPUnit\Framework\TestCase
             ->andReturn(false)
             ->mock();
 
-        $collection = new \App\Collections\MessageCollection();
+        $collection = new MessageCollection();
         $collection->add($message1);
         $collection->add($message2);
         $collection->add($message3);
