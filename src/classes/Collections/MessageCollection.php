@@ -47,11 +47,17 @@ class MessageCollection implements \Iterator, \Countable
         $this->data[] = $message;
     }
 
+    /**
+     * @return MessageCollection
+     */
     public function elapsed(): MessageCollection
     {
         return $this->filter("elapsed");
     }
 
+    /**
+     * @return MessageCollection
+     */
     public function notSent(): MessageCollection
     {
         return $this->filter("not-sent");
@@ -76,6 +82,10 @@ class MessageCollection implements \Iterator, \Countable
         return $collection;
     }
 
+    /**
+     * @param string $flag
+     * @return MessageCollection
+     */
     protected function filter(string $flag): MessageCollection
     {
         $filtered = new MessageCollection();
