@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface DataStoreClientInterface
+interface DataStoreClientInterface extends \Countable
 {
     public function load();
     public function getData(): array;

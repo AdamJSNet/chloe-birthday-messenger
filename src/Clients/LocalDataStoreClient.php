@@ -51,6 +51,11 @@ class LocalDataStoreClient implements DataStoreClientInterface
         return true;
     }
 
+    public function count()
+    {
+        return count($this->data);
+    }
+
     protected function getFileContents()
     {
         $this->file->rewind();
