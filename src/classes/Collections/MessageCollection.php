@@ -65,8 +65,9 @@ class MessageCollection implements \Iterator, \Countable
     public static function fromArray(array $data): MessageCollection
     {
         $collection = new self();
-        foreach ($data as $item) {
+        foreach ($data as $index => $item) {
             try {
+                $item["id"] = isset($item["id"]) ? $item["id"] : $index;
                 $collection->add(Message::fromArray($item));
             } catch (MessageException $e) {
                 throw MessageCollectionException::invalidMessage($e);
