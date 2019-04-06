@@ -1,20 +1,111 @@
 <?php
 
+use App\Collections\MessageCollection;
 use App\Contracts\MessageInterface;
+use App\Exceptions\MessageCollectionException;
+use App\Traits\Test\MessageDataTestTrait;
 
 class MessageCollectionTest extends PHPUnit\Framework\TestCase
 {
+    use MessageDataTestTrait;
+
     public function test_it_accepts_messages()
     {
         $collection = $this->getCollection();
 
-        $this->assertEquals(4, $collection->count());
+        $this->assertCount(4, $collection);
 
         $collection->rewind();
         for ($i = 1; $i <= $collection->count(); $i++) {
-            $this->assertEquals("my_id_$i", $collection->current()->getId());
+            $id = "my_id_$i";
+            $this->assertEquals($id, $collection->current()->getId());
+            $this->assertEquals($id, $collection->key());
             $collection->next();
         }
+    }
+
+    public function test_it_updates_a_message()
+    {
+        $message1 = Mockery::mock(MessageInterface::class)
+            ->shouldReceive('getId')
+            ->andReturn('my_id_1')
+            ->mock();
+
+        $message2 = Mockery::mock(MessageInterface::class)
+            ->shouldReceive('getId')
+            ->andReturn('my_id_2')
+            ->shouldReceive('isSent')
+            ->andReturn(false, true)
+            ->mock();
+
+        $collection = new MessageCollection();
+        $collection->add($message1);
+        $collection->add($message2);
+
+        // first isSent call on message2
+        $this->assertFalse($collection->rewind()->next()->current()->isSent());
+
+        $collection->update($message2);
+
+        // second isSent call on message2
+        $this->assertTrue($collection->rewind()->next()->current()->isSent());
+    }
+
+    public function test_it_creates_collection_of_valid_raw_messages()
+    {
+        $messages = [];
+        for ($i = 0; $i < 3; $i++) {
+            $testData = array_merge($this->getValidTestData(), [
+                "id" => "my_id_$i"  // unique ID per message
+            ]);
+            $messages[] = $testData;
+        }
+
+        $collection = MessageCollection::fromArray($messages);
+
+        $this->assertInstanceOf(MessageCollection::class, $collection);
+        $this->assertCount(3, $collection);
+    }
+
+    public function test_it_throws_exception_for_invalid_messages()
+    {
+        $messages = [
+            [
+                "id" => $this->getValidTestData()["id"]
+                // all other message properties are missing
+            ]
+        ];
+
+        $this->expectException(App\Exceptions\MessageCollectionException::class);
+
+        MessageCollection::fromArray($messages);
+    }
+
+    public function test_it_throws_exception_when_adding_an_existing_message()
+    {
+        $message = $this->getCollection()->current();
+
+        $this->expectExceptionObject(MessageCollectionException::messageExists($message->getId()));
+
+        $collection = new MessageCollection();
+        $collection->add($message);
+        $collection->add($message);
+    }
+
+    public function test_it_throws_exception_when_updating_a_non_existent_message()
+    {
+        $collection = $this->getCollection();
+        $message1 = $collection->current();
+
+        $collection->next();
+        $message2 = $collection->current();
+
+        $this->expectExceptionObject(MessageCollectionException::messageNotExists($message2->getId()));
+
+        // create a new collection with message1 only
+        $collection = new MessageCollection();
+        $collection->add($message1);
+        $collection->update($message2);
     }
 
     public function test_it_filters_by_elapsed()
@@ -104,7 +195,7 @@ class MessageCollectionTest extends PHPUnit\Framework\TestCase
             ->andReturn(false)
             ->mock();
 
-        $collection = new \App\Collections\MessageCollection();
+        $collection = new MessageCollection();
         $collection->add($message1);
         $collection->add($message2);
         $collection->add($message3);

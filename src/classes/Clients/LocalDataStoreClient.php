@@ -24,18 +24,20 @@ class LocalDataStoreClient implements DataStoreClientInterface
     /**
      * @throws DataStoreClientException
      */
-    public function load()
+    public function load(): self
     {
         if ($this->file->flock(LOCK_SH) === false) {
             throw DataStoreClientException::noLock();
         }
 
-        $json = json_decode($this->getFileContents());
+        $json = json_decode($this->getFileContents(), true);
         if ($json === null) {
             throw DataStoreClientException::invalidFormat();
         }
 
         $this->data = $json;
+
+        return $this;
     }
 
     /**
@@ -48,10 +50,12 @@ class LocalDataStoreClient implements DataStoreClientInterface
 
     /**
      * @param array $data
+     * @return LocalDataStoreClient
      */
-    public function setData(array $data)
+    public function setData(array $data): self
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
@@ -61,7 +65,10 @@ class LocalDataStoreClient implements DataStoreClientInterface
     public function save()
     {
         $contents = json_encode($this->data);
-        if ($this->file->fwrite($contents) === null) {
+        $this->file->fseek(0);      // move pointer to beginning of file
+        $this->file->ftruncate(0);  // clear existing contents
+        $result = $this->file->fwrite($contents);
+        if ($result === null || $result === 0) {
             throw DataStoreClientException::saveFailed();
         }
 

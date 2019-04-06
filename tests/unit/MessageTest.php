@@ -3,20 +3,23 @@
 use App\Entities\Message;
 use App\Enum\MessageType;
 use App\Exceptions\MessageException;
+use App\Traits\Test\MessageDataTestTrait;
 
 class MessageTest extends PHPUnit\Framework\TestCase
 {
+    use MessageDataTestTrait;
+
     public function test_it_rejects_empty_properties_array()
     {
-        $invalid = ["id", "type", "timestamp", "recipient", "message", "sent"];
-        sort($invalid);
+        $missing = ["id", "type", "timestamp", "recipient", "message", "sent"];
+        sort($missing);
 
-        $this->expectExceptionObject(MessageException::invalidProperties($invalid));
+        $this->expectExceptionObject(MessageException::missingProperties($missing));
 
         Message::fromArray([]);
     }
 
-    public function test_it_rejects_incomplete_properties_array()
+    public function test_it_rejects_properties_array_that_contains_too_many_keys()
     {
         $accept = [
             "id" => "my_id",
@@ -39,17 +42,17 @@ class MessageTest extends PHPUnit\Framework\TestCase
         Message::fromArray($data);
     }
 
-    public function test_it_rejects_properties_array_that_contains_too_many_keys()
+    public function test_it_rejects_incomplete_properties_array()
     {
         $data = [
             "id" => "my_id",
             "type" => "my_type",
             "timestamp" => "my_timestamp"
         ];
-        $invalid = ["recipient", "message", "sent"];
-        sort($invalid);
+        $missing = ["recipient", "message", "sent"];
+        sort($missing);
 
-        $this->expectExceptionObject(MessageException::invalidProperties($invalid));
+        $this->expectExceptionObject(MessageException::missingProperties($missing));
 
         Message::fromArray($data);
     }
@@ -120,17 +123,5 @@ class MessageTest extends PHPUnit\Framework\TestCase
         $now = $message->getTimestamp()->sub(new \DateInterval("P2D"));
 
         $this->assertFalse($message->isElapsed($now));
-    }
-
-    protected function getValidTestData()
-    {
-        return [
-            "id" => "my_id",
-            "type" => MessageType::TYPE_SMS,
-            "timestamp" => (new \DateTimeImmutable())->format("Y-m-d\TH:i:sP"),
-            "recipient" => "+447012345678",
-            "message" => "Hello World",
-            "sent" => true
-        ];
     }
 }

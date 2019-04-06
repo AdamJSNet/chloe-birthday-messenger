@@ -110,11 +110,26 @@ class Message implements MessageInterface
     }
 
     /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            "id" => $this->getId(),
+            "type" => $this->getType(),
+            "timestamp" => $this->getTimestamp()->format("Y-m-d\TH:i:sP"),
+            "recipient" => $this->getRecipient(),
+            "message" => $this->getMessage(),
+            "sent" => $this->isSent()
+        ];
+    }
+
+    /**
      * @param array $data
      * @return Message
      * @throws MessageException
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): Message
     {
         $props = ["id", "type", "timestamp", "recipient", "message", "sent"];
         $keys = array_keys($data);
@@ -126,7 +141,7 @@ class Message implements MessageInterface
         $diff2 = array_diff($keys, $props);
 
         if (!empty($diff1)) {
-            throw MessageException::invalidProperties($diff1);
+            throw MessageException::missingProperties($diff1);
         }
 
         if (!empty($diff2)) {

@@ -30,11 +30,24 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($data, $client->getData());
     }
 
-    public function test_it_throws_exception_when_write_is_not_successful()
+    public function test_it_throws_exception_when_write_returns_null()
     {
         $file = $this->getSplFileObjectMock()
             ->shouldReceive('fwrite')
             ->andReturn(null)
+            ->mock();
+
+        $this->expectExceptionObject(DataStoreClientException::saveFailed());
+
+        $client = new LocalDataStoreClient($file);
+        $client->save();
+    }
+
+    public function test_it_throws_exception_when_write_returns_zero_bytes()
+    {
+        $file = $this->getSplFileObjectMock()
+            ->shouldReceive('fwrite')
+            ->andReturn(0)
             ->mock();
 
         $this->expectExceptionObject(DataStoreClientException::saveFailed());
