@@ -16,6 +16,7 @@ $console->pushHandler($stdOutHandler);
 try {
     $dotenv = Dotenv\Dotenv::create(ROOT_DIR);
     $dotenv->load();
+    $dotenv->required("MESSAGES_FILENAME");
 
     $timezone = getenv("TIMEZONE");
     $console->setTimezone(new DateTimeZone(empty($timezone) ? "UTC" : $timezone));
