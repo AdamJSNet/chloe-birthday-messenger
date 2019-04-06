@@ -3,6 +3,9 @@
 namespace App\Collections;
 
 use App\Contracts\MessageInterface;
+use App\Entities\Message;
+use App\Exceptions\MessageCollectionException;
+use App\Exceptions\MessageException;
 
 class MessageCollection implements \Iterator, \Countable
 {
@@ -52,6 +55,24 @@ class MessageCollection implements \Iterator, \Countable
     public function notSent(): MessageCollection
     {
         return $this->filter("not-sent");
+    }
+
+    /**
+     * @param array $data
+     * @return MessageCollection
+     * @throws MessageCollectionException
+     */
+    public static function fromArray(array $data): MessageCollection
+    {
+        $collection = new self();
+        foreach ($data as $item) {
+            try {
+                $collection->add(Message::fromArray($item));
+            } catch (MessageException $e) {
+                throw MessageCollectionException::invalidMessage($e);
+            }
+        }
+        return $collection;
     }
 
     protected function filter(string $flag): MessageCollection

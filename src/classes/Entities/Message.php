@@ -114,7 +114,7 @@ class Message implements MessageInterface
      * @return Message
      * @throws MessageException
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): Message
     {
         $props = ["id", "type", "timestamp", "recipient", "message", "sent"];
         $keys = array_keys($data);
