@@ -17,6 +17,51 @@ class MessageCollectionTest extends PHPUnit\Framework\TestCase
         }
     }
 
+    public function test_it_filters_by_elapsed()
+    {
+        $filtered = $this->getCollection()->elapsed();
+
+        $this->assertEquals(2, $filtered->count());
+
+        $expectedIds = ["my_id_1", "my_id_2"];
+        $filtered->rewind();
+
+        foreach ($expectedIds as $id) {
+            $this->assertEquals($id, $filtered->current()->getId());
+            $filtered->next();
+        }
+    }
+
+    public function test_it_filters_by_notSent()
+    {
+        $filtered = $this->getCollection()->notSent();
+
+        $this->assertEquals(2, $filtered->count());
+
+        $expectedIds = ["my_id_2", "my_id_4"];
+        $filtered->rewind();
+
+        foreach ($expectedIds as $id) {
+            $this->assertEquals($id, $filtered->current()->getId());
+            $filtered->next();
+        }
+    }
+
+    public function test_it_filters_by_elapsed_and_notSent()
+    {
+        $filtered = $this->getCollection()->elapsed()->notSent();
+
+        $this->assertEquals(1, $filtered->count());
+
+        $expectedIds = ["my_id_2"];
+        $filtered->rewind();
+
+        foreach ($expectedIds as $id) {
+            $this->assertEquals($id, $filtered->current()->getId());
+            $filtered->next();
+        }
+    }
+
     protected function getCollection()
     {
         // elapsed, sent
