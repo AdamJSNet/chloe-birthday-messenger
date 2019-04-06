@@ -17,19 +17,21 @@ class MessageCollection implements \Iterator, \Countable
         return $this->data[$this->key()];
     }
 
-    public function key()
+    public function key(): string
     {
         return array_keys($this->data)[$this->pointer];
     }
 
-    public function next()
+    public function next(): self
     {
         $this->pointer++;
+        return $this;
     }
 
-    public function rewind()
+    public function rewind(): self
     {
         $this->pointer = 0;
+        return $this;
     }
 
     public function valid(): bool
@@ -42,9 +44,30 @@ class MessageCollection implements \Iterator, \Countable
         return count($this->data);
     }
 
-    public function add(MessageInterface $message)
+    public function add(MessageInterface $message): self
     {
-        $this->data[$message->getId()] = $message;
+        $key = $message->getId();
+
+        if (isset($this->data[$key])) {
+            throw MessageCollectionException::messageExists($key);
+        }
+
+        $this->data[$key] = $message;
+
+        return $this;
+    }
+
+    public function update(MessageInterface $message): self
+    {
+        $key = $message->getId();
+
+        if (!isset($this->data[$key])) {
+            throw MessageCollectionException::messageNotExists($key);
+        }
+
+        $this->data[$key] = $message;
+
+        return $this;
     }
 
     /**
