@@ -110,6 +110,21 @@ class Message implements MessageInterface
     }
 
     /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            "id" => $this->getId(),
+            "type" => $this->getType(),
+            "timestamp" => $this->getTimestamp()->format("Y-m-d\TH:i:sP"),
+            "recipient" => $this->getRecipient(),
+            "message" => $this->getMessage(),
+            "sent" => $this->isSent()
+        ];
+    }
+
+    /**
      * @param array $data
      * @return Message
      * @throws MessageException

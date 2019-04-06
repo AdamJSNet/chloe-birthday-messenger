@@ -44,6 +44,24 @@ class MessageCollection implements \Iterator, \Countable
         return count($this->data);
     }
 
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $data = array_values($this->data);
+        return array_map(function(MessageInterface $message) {
+            $array = $message->toArray();
+            unset($array['id']);
+            return $array;
+        }, $data);
+    }
+
+    /**
+     * @param MessageInterface $message
+     * @return MessageCollection
+     * @throws MessageCollectionException
+     */
     public function add(MessageInterface $message): self
     {
         $key = $message->getId();
@@ -57,6 +75,11 @@ class MessageCollection implements \Iterator, \Countable
         return $this;
     }
 
+    /**
+     * @param MessageInterface $message
+     * @return MessageCollection
+     * @throws MessageCollectionException
+     */
     public function update(MessageInterface $message): self
     {
         $key = $message->getId();
