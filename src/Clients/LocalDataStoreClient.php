@@ -9,8 +9,8 @@ class LocalDataStoreClient implements DataStoreClientInterface
 {
     /** @var \SplFileObject $file */
     protected $file;
-    /** @var string $contents */
-    protected $contents = "";
+    /** @var array $data */
+    protected $data = [];
 
     public function __construct(\SplFileObject $file)
     {
@@ -23,30 +23,43 @@ class LocalDataStoreClient implements DataStoreClientInterface
             throw DataStoreClientException::noLock();
         }
 
-        $this->file->rewind();
-
-        foreach ($this->file as $line) {
-            $this->contents .= $line;
+        $json = json_decode($this->getFileContents());
+        if ($json === null) {
+            throw DataStoreClientException::invalidFormat();
         }
+
+        $this->data = $json;
     }
 
-    public function getContents()
+    public function getData(): array
     {
-        return $this->contents;
+        return $this->data;
     }
 
-    public function setContents($contents)
+    public function setData(array $data)
     {
-        $this->contents = (string) $contents;
-        return $this;
+        $this->data = $data;
     }
 
     public function save()
     {
-        if ($this->file->fwrite($this->contents) === null) {
+        $contents = json_encode($this->data);
+        if ($this->file->fwrite($contents) === null) {
             throw DataStoreClientException::saveFailed();
         }
 
         return true;
+    }
+
+    protected function getFileContents()
+    {
+        $this->file->rewind();
+
+        $contents = "";
+        foreach ($this->file as $line) {
+            $contents .= $line;
+        }
+
+        return $contents;
     }
 }

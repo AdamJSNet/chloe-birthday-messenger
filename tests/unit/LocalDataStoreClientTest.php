@@ -19,16 +19,16 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
         $client->load();
     }
 
-    public function test_it_sets_and_gets_file_contents()
+    public function test_it_sets_and_gets_data()
     {
         $file = $this->getSplFileObjectMock();
 
-        $contents = "Hello World";
+        $data = ["hello" => "world"];
 
         $client = new LocalDataStoreClient($file);
-        $client->setContents($contents);
+        $client->setData($data);
 
-        $this->assertEquals($contents, $client->getContents());
+        $this->assertEquals($data, $client->getData());
     }
 
     public function test_it_throws_exception_when_write_is_not_successful()
