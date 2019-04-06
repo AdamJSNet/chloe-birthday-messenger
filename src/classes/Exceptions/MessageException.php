@@ -9,6 +9,11 @@ class MessageException extends \Exception
         return new self("Invalid properties: " . implode(", ", $props));
     }
 
+    public static function missingProperties(array $props)
+    {
+        return new self("Missing properties: " . implode(", ", $props));
+    }
+
     public static function invalidDateFormat()
     {
         return new self("Invalid date format");

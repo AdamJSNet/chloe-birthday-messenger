@@ -126,7 +126,7 @@ class Message implements MessageInterface
         $diff2 = array_diff($keys, $props);
 
         if (!empty($diff1)) {
-            throw MessageException::invalidProperties($diff1);
+            throw MessageException::missingProperties($diff1);
         }
 
         if (!empty($diff2)) {
