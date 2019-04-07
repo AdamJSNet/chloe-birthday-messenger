@@ -159,6 +159,16 @@ class Message implements MessageInterface
         // cast to boolean
         $boolSent = (bool) $sent;
 
+        // json encode content if array
+        switch (gettype($content)) {
+            case "array":
+            case "object":
+                $content = json_encode($content);
+                break;
+            default:
+                break;
+        }
+
         return new self($id, $type, $dateTime, $recipient, $content, $boolSent);
     }
 

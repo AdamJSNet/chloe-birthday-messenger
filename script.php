@@ -39,6 +39,7 @@ try {
     // instantiate our comms client
     $nexmo = new NexmoCommsHandlerClient(Functions::getNexmoClient());
     $senderSms = getenv("NEXMO_SMS_SENDER");
+    $senderVoice = getenv("NEXMO_VOICE_SENDER");
 
     /** @var App\Contracts\MessageInterface $message */
     foreach ($messages as $message) {
@@ -46,6 +47,9 @@ try {
             switch ($message->getType()) {
                 case MessageType::TYPE_SMS:
                     $nexmo->sendSms($message->getRecipient(), $senderSms, $message->getContent());
+                    break;
+                case MessageType::TYPE_VOICE:
+                    $nexmo->sendVoice($message->getRecipient(), $senderVoice, $message->getContent());
                     break;
                 default:
                     throw new Exception("Unrecognised Message Type");

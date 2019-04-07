@@ -48,4 +48,40 @@ class NexmoCommsHandlerClient implements CommsHandlerClientInterface
 
         return true;
     }
+
+    /**
+     * @param $to
+     * @param $from
+     * @param $content
+     * @return bool
+     * @throws CommsHandlerClientException
+     */
+    public function sendVoice($to, $from, $content): bool
+    {
+        $params = [
+            'to' => [[
+                'type' => 'phone',
+                'number' => $to
+            ]],
+            'from' => [
+                'type' => 'phone',
+                'number' => $from
+            ],
+        ];
+
+        $json = json_decode($content, true);
+        if ($json !== null) {
+            $params['ncco'] = $json;            // content should be considered a ncco object
+        } else {
+            $params['answer_url'] = [$content]; // content should be considered an answer URL
+        }
+
+        try {
+            $this->client->calls()->create($params);
+        } catch (\Exception $e) {
+            throw CommsHandlerClientException::operationFailed("send Voice", $e->getMessage());
+        }
+
+        return true;
+    }
 }
