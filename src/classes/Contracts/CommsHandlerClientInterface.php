@@ -4,5 +4,6 @@ namespace App\Contracts;
 
 interface CommsHandlerClientInterface
 {
-    public function sendSms(string $to, string $from, string $message): bool;
+    public function sendSms($to, $from, $content): bool;
+    public function sendVoice($to, $from, $content): bool;
 }

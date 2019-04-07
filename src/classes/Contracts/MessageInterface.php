@@ -8,7 +8,7 @@ interface MessageInterface
     public function getType(): string;
     public function getTimestamp(): \DateTimeInterface;
     public function getRecipient(): string;
-    public function getMessage(): string;
+    public function getContent(): string;
     public function isSent(): bool;
     public function setSent(bool $sent): MessageInterface;
     public function isElapsed(\DateTimeInterface $date = null): bool;

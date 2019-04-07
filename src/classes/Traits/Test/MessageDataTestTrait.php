@@ -13,7 +13,7 @@ trait MessageDataTestTrait
             "type" => MessageType::TYPE_SMS,
             "timestamp" => (new \DateTimeImmutable())->format("Y-m-d\TH:i:sP"),
             "recipient" => "+447012345678",
-            "message" => "Hello World",
+            "content" => "Hello World",
             "sent" => true
         ];
     }

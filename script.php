@@ -3,6 +3,7 @@
 use App\Clients\LocalDataStoreClient;
 use App\Clients\NexmoCommsHandlerClient;
 use App\Collections\MessageCollection;
+use App\Enum\MessageType;
 use App\Exceptions\CommsHandlerClientException;
 use App\Exceptions\MessageCollectionException;
 use App\Functions;
@@ -37,12 +38,23 @@ try {
 
     // instantiate our comms client
     $nexmo = new NexmoCommsHandlerClient(Functions::getNexmoClient());
-    $sender = getenv("NEXMO_SENDER");
+    $senderSms = getenv("NEXMO_SMS_SENDER");
+    $senderVoice = getenv("NEXMO_VOICE_SENDER");
 
     /** @var App\Contracts\MessageInterface $message */
     foreach ($messages as $message) {
         try {
-            $nexmo->sendSms($message->getRecipient(), $sender, $message->getMessage());
+            switch ($message->getType()) {
+                case MessageType::TYPE_SMS:
+                    $nexmo->sendSms($message->getRecipient(), $senderSms, $message->getContent());
+                    break;
+                case MessageType::TYPE_VOICE:
+                    $nexmo->sendVoice($message->getRecipient(), $senderVoice, $message->getContent());
+                    break;
+                default:
+                    throw new Exception("Unrecognised Message Type");
+                    break;
+            }
         } catch (CommsHandlerClientException $e) {
             $console->error($e->getMessage());
             $fail[] = $message->getId();

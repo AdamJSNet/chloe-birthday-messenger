@@ -16,8 +16,8 @@ class Message implements MessageInterface
     protected $timestamp;
     /** @var string $recipient */
     protected $recipient;
-    /** @var string $message */
-    protected $message;
+    /** @var string $content */
+    protected $content;
     /** @var bool $sent */
     protected $sent;
 
@@ -26,7 +26,7 @@ class Message implements MessageInterface
         string $type,
         \DateTimeInterface $timestamp,
         string $recipient,
-        string $message,
+        string $content,
         bool $sent = false
     ) {
         $this->validate($type);
@@ -35,7 +35,7 @@ class Message implements MessageInterface
         $this->type = trim($type);
         $this->timestamp = $timestamp;
         $this->recipient = trim($recipient);
-        $this->message = trim($message);
+        $this->content = trim($content);
         $this->sent = $sent;
     }
 
@@ -74,9 +74,9 @@ class Message implements MessageInterface
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getContent(): string
     {
-        return $this->message;
+        return $this->content;
     }
 
     /**
@@ -119,7 +119,7 @@ class Message implements MessageInterface
             "type" => $this->getType(),
             "timestamp" => $this->getTimestamp()->format("Y-m-d\TH:i:sP"),
             "recipient" => $this->getRecipient(),
-            "message" => $this->getMessage(),
+            "content" => $this->getContent(),
             "sent" => $this->isSent()
         ];
     }
@@ -131,7 +131,7 @@ class Message implements MessageInterface
      */
     public static function fromArray(array $data): Message
     {
-        $props = ["id", "type", "timestamp", "recipient", "message", "sent"];
+        $props = ["id", "type", "timestamp", "recipient", "content", "sent"];
         $keys = array_keys($data);
 
         sort($props);
@@ -159,7 +159,17 @@ class Message implements MessageInterface
         // cast to boolean
         $boolSent = (bool) $sent;
 
-        return new self($id, $type, $dateTime, $recipient, $message, $boolSent);
+        // json encode content if array
+        switch (gettype($content)) {
+            case "array":
+            case "object":
+                $content = json_encode($content);
+                break;
+            default:
+                break;
+        }
+
+        return new self($id, $type, $dateTime, $recipient, $content, $boolSent);
     }
 
     /**
