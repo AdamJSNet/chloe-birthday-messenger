@@ -21,4 +21,10 @@ class Functions
         }
         die();
     }
+
+    public static function getNexmoClient()
+    {
+        $basic = new \Nexmo\Client\Credentials\Basic(getenv("NEXMO_API_KEY"), getenv("NEXMO_API_SECRET"));
+        return new \Nexmo\Client($basic);
+    }
 }

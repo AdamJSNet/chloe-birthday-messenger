@@ -33,6 +33,8 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
     public function test_it_throws_exception_when_write_returns_null()
     {
         $file = $this->getSplFileObjectMock()
+            ->shouldReceive('fseek')
+            ->shouldReceive('ftruncate')
             ->shouldReceive('fwrite')
             ->andReturn(null)
             ->mock();
@@ -46,6 +48,8 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
     public function test_it_throws_exception_when_write_returns_zero_bytes()
     {
         $file = $this->getSplFileObjectMock()
+            ->shouldReceive('fseek')
+            ->shouldReceive('ftruncate')
             ->shouldReceive('fwrite')
             ->andReturn(0)
             ->mock();
@@ -59,6 +63,8 @@ class LocalDataStoreClientTest extends PHPUnit\Framework\TestCase
     public function test_it_returns_true_on_successful_write()
     {
         $file = $this->getSplFileObjectMock()
+            ->shouldReceive('fseek')
+            ->shouldReceive('ftruncate')
             ->shouldReceive('fwrite')
             ->andReturn(true)
             ->mock();

@@ -27,13 +27,13 @@ class NexmoCommsHandlerClient implements CommsHandlerClientInterface
      * @return bool
      * @throws CommsHandlerClientException
      */
-    public function sendSms(string $to, string $from, string $message): bool
+    public function sendSms(string $to, string $from, string $text): bool
     {
         try {
             $message = $this->client->message()->send([
                 'to' => $to,
                 'from' => $from,
-                'text' => $message
+                'text' => $text
             ]);
         } catch (\Exception $e) {
             throw CommsHandlerClientException::operationFailed("send SMS", $e->getMessage());
