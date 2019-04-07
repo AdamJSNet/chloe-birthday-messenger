@@ -1,7 +1,9 @@
 <?php
 
 use App\Clients\LocalDataStoreClient;
+use App\Clients\NexmoCommsHandlerClient;
 use App\Collections\MessageCollection;
+use App\Exceptions\CommsHandlerClientException;
 use App\Exceptions\MessageCollectionException;
 use App\Functions;
 
@@ -33,18 +35,32 @@ try {
     $success = [];
     $fail = [];
 
+    // instantiate our comms client
+    $nexmo = new NexmoCommsHandlerClient(Functions::getNexmoClient());
+    $sender = getenv("NEXMO_SENDER");
+
     /** @var App\Contracts\MessageInterface $message */
     foreach ($messages as $message) {
-        // @TODO process message...
+        try {
+            $nexmo->sendSms($message->getRecipient(), $sender, $message->getMessage());
+        } catch (CommsHandlerClientException $e) {
+            $console->error($e->getMessage());
+            $fail[] = $message->getId();
+            continue;
+        }
 
         $message->setSent(true);
 
         try {
             $messages->update($message);
-            $success[] = $message;
         } catch (MessageCollectionException $e) {
-            $fail[] = $message;
+            $console->error($e->getMessage());
+            $fail[] = $message->getId();
+            continue;
         }
+
+        $console->info("Sent message ID = " . $message->getId());
+        $success[] = $message->getId();
     }
 
     $store->setData($messages->toArray())->save();
