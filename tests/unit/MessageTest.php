@@ -11,7 +11,7 @@ class MessageTest extends PHPUnit\Framework\TestCase
 
     public function test_it_rejects_empty_properties_array()
     {
-        $missing = ["id", "type", "timestamp", "recipient", "message", "sent"];
+        $missing = ["id", "type", "timestamp", "recipient", "content", "sent"];
         sort($missing);
 
         $this->expectExceptionObject(MessageException::missingProperties($missing));
@@ -26,7 +26,7 @@ class MessageTest extends PHPUnit\Framework\TestCase
             "type" => "my_type",
             "timestamp" => "my_timestamp",
             "recipient" => "my_recipient",
-            "message" => "my_message",
+            "content" => "my_content",
             "sent" => "my_sent"
         ];
 
@@ -49,7 +49,7 @@ class MessageTest extends PHPUnit\Framework\TestCase
             "type" => "my_type",
             "timestamp" => "my_timestamp"
         ];
-        $missing = ["recipient", "message", "sent"];
+        $missing = ["recipient", "content", "sent"];
         sort($missing);
 
         $this->expectExceptionObject(MessageException::missingProperties($missing));
@@ -99,7 +99,7 @@ class MessageTest extends PHPUnit\Framework\TestCase
             $data["timestamp"]
         ), $message->getTimestamp());
         $this->assertEquals($data["recipient"], $message->getRecipient());
-        $this->assertEquals($data["message"], $message->getMessage());
+        $this->assertEquals($data["content"], $message->getContent());
         $this->assertTrue($message->isSent());
     }
 

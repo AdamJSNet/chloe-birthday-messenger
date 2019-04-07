@@ -45,7 +45,7 @@ try {
         try {
             switch ($message->getType()) {
                 case MessageType::TYPE_SMS:
-                    $nexmo->sendSms($message->getRecipient(), $sender, $message->getMessage());
+                    $nexmo->sendSms($message->getRecipient(), $sender, $message->getContent());
                     break;
                 default:
                     throw new Exception("Unrecognised Message Type");
