@@ -21,10 +21,10 @@ try {
     $messageCollection = $messageService->getAllMessagesFromDataStore($store);
 
     // retrieve messages to be processed in this iteration only
-    $messages = $messageCollection->elapsed()->notSent();
+    $filtered = $messageCollection->elapsed()->notSent();
 
     // summarise
-    $count = $messages->count();
+    $count = $filtered->count();
     $info = "$count " . Functions::pluralise($count, "message", "messages") . " to process";
     $log->info($info);
 
@@ -36,7 +36,7 @@ try {
     $fail = [];
 
     /** @var App\Contracts\MessageInterface $message */
-    foreach ($messages as $message) {
+    foreach ($filtered as $message) {
         try {
             $messageService->sendMessage($message);
         } catch (MessageServiceException $e) {
@@ -48,7 +48,7 @@ try {
         $message->setSent(true);
 
         try {
-            $messages->update($message);
+            $messageCollection->update($message);
         } catch (MessageCollectionException $e) {
             $log->error($e->getMessage());
             $fail[] = $message->getId();
@@ -59,7 +59,7 @@ try {
         $success[] = $message->getId();
     }
 
-    $store->setData($messages->toArray())->save();
+    $store->setData($messageCollection->toArray())->save();
 
     $countSuccess = count($success);
     $countFail = count($fail);
