@@ -26,6 +26,8 @@ cp .env.example .env
 
 You'll need to register with [Nexmo](https://www.nexmo.com/) and amend the Nexmo-specific env variables in your amazing new .env file.
 
+Also, download your Nexmo application's private key and save it as `private.key` in the `/keys` directory.
+
 The entrypoint `scripts/send-pending-messages.php` is designed to run on a cron, every 15 mins.
 
 ```
