@@ -1,6 +1,6 @@
 # Chloe's Birthday Assistant
 
-### v1.0.0
+#### v1.0.0
 
 ## Abooot
 
