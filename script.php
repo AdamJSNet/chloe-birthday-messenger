@@ -10,8 +10,6 @@ use App\Services\MessageService;
 require_once("src/bootstrap.php");
 
 try {
-    $console->info("Running script...");
-
     // In the absence of an IoC container, create our clients manually
     $nexmo = new NexmoCommsHandlerClient(Functions::getNexmoClient());
     $messageService = new MessageService($nexmo);
@@ -28,10 +26,10 @@ try {
     // summarise
     $count = $messages->count();
     $info = "$count " . Functions::pluralise($count, "message", "messages") . " to process";
-    $console->info($info);
+    $log->info($info);
 
     if ($count === 0) {
-        Functions::end($console);
+        die();
     }
 
     $success = [];
@@ -42,7 +40,7 @@ try {
         try {
             $messageService->sendMessage($message);
         } catch (MessageServiceException $e) {
-            $console->error($e->getMessage());
+            $log->error($e->getMessage());
             $fail[] = $message->getId();
             continue;
         }
@@ -52,12 +50,12 @@ try {
         try {
             $messages->update($message);
         } catch (MessageCollectionException $e) {
-            $console->error($e->getMessage());
+            $log->error($e->getMessage());
             $fail[] = $message->getId();
             continue;
         }
 
-        $console->info("Sent message ID = " . $message->getId());
+        $log->info("Sent message ID = " . $message->getId());
         $success[] = $message->getId();
     }
 
@@ -67,7 +65,8 @@ try {
     $countFail = count($fail);
     $info = "$countSuccess " . Functions::pluralise($countSuccess, "message", "messages")
         . " processed successfully. $countFail failed.";
-    $console->info($info);
+    $log->info($info);
 } catch (Exception $e) {
-    $console->error("*** ABORTED *** " . $e->getMessage());
+    $log->error("*** ABORTED *** " . $e->getMessage());
 }
+$log->info("--------------------");
