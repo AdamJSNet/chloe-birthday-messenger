@@ -11,6 +11,9 @@ use App\Exceptions\CommsHandlerClientException;
 use App\Exceptions\MessageCollectionException;
 use App\Exceptions\MessageServiceException;
 
+/**
+ * @todo write tests
+ */
 class MessageService
 {
     /** @var CommsHandlerClientInterface $comms */
@@ -37,7 +40,7 @@ class MessageService
         try {
             $collection = MessageCollection::fromArray($store->getData());
         } catch (MessageCollectionException $e) {
-            MessageServiceException::rethrow($e);
+            throw MessageServiceException::rethrow($e);
         }
         return $collection;
     }
