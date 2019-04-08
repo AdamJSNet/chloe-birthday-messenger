@@ -33,7 +33,8 @@ class NexmoCommsHandlerClient implements CommsHandlerClientInterface
             $message = $this->client->message()->send([
                 'to' => $to,
                 'from' => $from,
-                'text' => $content
+                'text' => $content,
+                'type' => 'unicode'
             ]);
         } catch (\Exception $e) {
             throw CommsHandlerClientException::operationFailed("send SMS", $e->getMessage());

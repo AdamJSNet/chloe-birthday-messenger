@@ -124,4 +124,9 @@ class MessageTest extends PHPUnit\Framework\TestCase
 
         $this->assertFalse($message->isElapsed($now));
     }
+
+    protected function tearDown()
+    {
+        Mockery::close();
+    }
 }

@@ -5,13 +5,13 @@ define("ROOT_DIR", dirname(__DIR__));
 require_once(ROOT_DIR . "/vendor/autoload.php");
 
 // configure console logger
-$console = new Monolog\Logger("stdout");
+$log = new Monolog\Logger("log");
 
-$stdOutHandler = new Monolog\Handler\StreamHandler("php://stdout", Monolog\Logger::INFO);
-$stdOutFormatter = new Monolog\Formatter\LineFormatter("[%datetime%] %level_name%: %message% %context%\n", "Y-m-d H:i:sP", true, true);
-$stdOutHandler->setFormatter($stdOutFormatter);
+$logHandler = new Monolog\Handler\StreamHandler(ROOT_DIR . "/logs/script.log", Monolog\Logger::INFO);
+$logFormatter = new Monolog\Formatter\LineFormatter("[%datetime%] %level_name%: %message% %context%\n", "Y-m-d H:i:sP", true, true);
+$logHandler->setFormatter($logFormatter);
 
-$console->pushHandler($stdOutHandler);
+$log->pushHandler($logHandler);
 
 try {
     $dotenv = Dotenv\Dotenv::create(ROOT_DIR);
@@ -19,8 +19,8 @@ try {
     $dotenv->required(["MESSAGES_FILENAME", "NEXMO_API_KEY", "NEXMO_API_SECRET", "NEXMO_VOICE_SENDER", "NEXMO_SMS_SENDER", "NEXMO_APP_PRIVATE_KEY_PATH"]);
 
     $timezone = getenv("TIMEZONE");
-    $console->setTimezone(new DateTimeZone(empty($timezone) ? "UTC" : $timezone));
+    $log->setTimezone(new DateTimeZone(empty($timezone) ? "UTC" : $timezone));
 } catch (Exception $e) {
-    $console->error("*** ABORTED *** " . $e->getMessage());
+    $log->error("*** ABORTED *** " . $e->getMessage());
     die();
 }

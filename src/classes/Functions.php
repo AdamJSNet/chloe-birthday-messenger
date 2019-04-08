@@ -27,7 +27,7 @@ class Functions
         // @TODO consider Config class which can be injected/mocked to retrieve env variables
         $basic = new \Nexmo\Client\Credentials\Basic(getenv("NEXMO_API_KEY"), getenv("NEXMO_API_SECRET"));
         $keypair = new \Nexmo\Client\Credentials\Keypair(
-            file_get_contents(getenv("NEXMO_APP_PRIVATE_KEY_PATH")),
+            file_get_contents(ROOT_DIR . "/" . getenv("NEXMO_APP_PRIVATE_KEY_PATH")),
             getenv("NEXMO_APP_ID")
         );
         return new \Nexmo\Client(new \Nexmo\Client\Credentials\Container($basic, $keypair));
