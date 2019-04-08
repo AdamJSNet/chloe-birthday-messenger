@@ -7,7 +7,7 @@ use App\Exceptions\MessageServiceException;
 use App\Functions;
 use App\Services\MessageService;
 
-require_once("src/bootstrap.php");
+require_once(dirname(dirname(__FILE__)) . "/src/bootstrap.php");
 
 try {
     // In the absence of an IoC container, create our clients manually
