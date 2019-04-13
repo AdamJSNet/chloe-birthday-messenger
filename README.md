@@ -1,8 +1,8 @@
 # Chloe's Birthday Assistant
 
-#### v1.0.0
+#### v1.0.1
 
-## Abooot
+## Abooot 👢
 
 A small project built to drip-feed Chloe's Edinburgh-oriented birthday itinerary via SMS and Voice calls.
 
@@ -15,7 +15,7 @@ Built from scratch with a simple bootstrap/some packages - no framework (because
 
 Requires PHP7+ which you're using anyway (because security).
 
-## Start me up
+## Start me up 👅
 
 From the project root...
 
@@ -28,7 +28,7 @@ You'll need to register with [Nexmo](https://www.nexmo.com/) and amend the Nexmo
 
 Also, download your Nexmo application's private key and save it as `private.key` in the `/keys` directory.
 
-The entrypoint `scripts/send-pending-messages.php` is designed to run on a cron, every 15 mins.
+The entrypoint `/scripts/send-pending-messages.php` is designed to run on a cron, every 15 mins.
 
 ```
 */15 * * * * /path/to/scripts/send-pending-messages.php >/dev/null 2>&1
@@ -36,18 +36,18 @@ The entrypoint `scripts/send-pending-messages.php` is designed to run on a cron,
 
 This script mops up all "elapsed" messages (based on the current timestamp) which have not yet been sent, and... sends them.
 
-The system user that executes the script will need to have write permissions on the `/logs` directory.
+The system user that executes the script will need to have write permissions on the `/logs` and `/data` directories.
 
 I've added the schedule of messages to the `/data` folder so that you can see how brilliantly diverse Edinburgh is as a birthday destination.
-The recipient contact details are obfuscated, so please change these to valid numbers in that event that you might actually genuinely consider running this project IRL.
+The recipient contact details are obfuscated so please change these to valid numbers, should you actually genuinely consider running this project IRL.
 
 There is also a `/public` directory which you can use to serve HTTP requests.
 
-The `event.php` file is meant to be a Nexmo webhook destination. There are also some files in the `/audio` directory, which are used as streaming audio
+The `event.php` file is meant to be a Nexmo webhook destination. There are also some files in the `/audio` directory, which are referenced as streaming audio in the message schedule.
 
-If you are planning to serve these assets, remember to use [ngrok](https://ngrok.com/) for tunnelling to your local environment (and update the paths in the `data/messages.json` manifest accordingly). 
+If you are planning to serve these assets, remember to use [ngrok](https://ngrok.com/) for tunnelling to your local environment (and update the paths in the `/data/messages.json` manifest accordingly).
 
-## Tests
+## Tests 📝
 
 Run tests, run.
 
@@ -57,10 +57,10 @@ Run tests, run.
 vendor/bin/phpunit
 ```
 
-## The future
+## The future 🤖
 
-Maybe another data source `CommsHandlerClient` class (e.g. for *Google Sheets*),
+Maybe adding another `CommsHandlerClient` child class to facilitate an alternative data source (e.g. for *Google Sheets*),
 meaning that I don't have to keep ssh'ing onto a server and modifying raw JSON
 whenever the birthday itinerary changes due to Great British weather... (:thumbsup:)
 
-Maybe an integration with the Thomas Cook VR Holiday API, so I don't have to leave my house for next year's 31st?
+Maybe an integration with the Thomas Cook VR Holiday API, so I don't have to leave my house next year?
